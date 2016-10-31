@@ -1,0 +1,43 @@
+@charset "utf-8";
+*{
+    padding:0;
+    margin:0;
+    font-family:'Microsoft YaHei';
+	
+}
+body{background:#226266;}
+ul,li{
+    list-style:none;
+}
+.page{
+    /*background:aqua;
+    opacity:0.3;*/
+    position:relative;
+    width:100%;
+    overflow:hidden;
+
+}
+.page .screen{
+    z-index:1;
+    width:100%;
+    position:absolute;
+    transition:.5s all ease;
+    -ms-transition:.5s all ease;
+    -webkit-transition:.5s all ease;
+    -o-transition:.5s all ease;
+    -moz-transition:.5s all ease;
+    top:0;
+    left:0;
+}
+
+.show-page .show-box span{
+    position:absolute;
+    display:inline-block;
+}
+.page .screen .tips{
+    font-size:100px;
+    text-align:center;
+    width:100%;
+    position:relative;
+}
+

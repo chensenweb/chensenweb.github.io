@@ -1,147 +1,207 @@
-/**
- * 页面ready方法
- */
-$(document).ready(function() {
-
-    categoryDisplay();
-    generateContent();
-    backToTop();
-});
-
-/**
- * load方法，页面的加载完成后触发
- * {fixFooterInit();} 固定Footer栏
- */
-/*$(window).load(function() {
-    fixFooterInit();
-});*/
-
-
-/**
- * 固定底栏的初始化方法
- * 在一开始载入页面时，使用fixFooter()方法固定底栏。
- * 在浏览器窗口改变大小是，依然固定底栏
- * @return {[type]} [description]
- */
-function fixFooterInit() {
-    var footerHeight = $('footer').outerHeight();
-    var footerMarginTop = getFooterMarginTop() - 0; //类型转换
-    // var footerMarginTop = 80;
-
-    fixFooter(footerHeight, footerMarginTop); //fix footer at the beginning
-
-    $(window).resize(function() { //when resize window, footer can auto get the postion
-        fixFooter(footerHeight, footerMarginTop);
-    });
-
-    /*    $('body').click(function() {
-        fixFooter(footerHeight, footerMarginTop);
-    });*/
-
-
-}
-
-/**
- * 固定底栏
- * @param  {number} footerHeight    底栏高度
- * @param  {number} footerMarginTop 底栏MarginTop
- * @return {[type]}                 [description]
- */
-function fixFooter(footerHeight, footerMarginTop) {
-    var windowHeight = $(window).height();
-    var contentHeight = $('body>.container').outerHeight() + $('body>.container').offset().top + footerHeight + footerMarginTop;
-    // console.log("window---"+windowHeight);
-    // console.log("$('body>.container').outerHeight()---"+$('body>.container').outerHeight() );
-    // console.log("$('body>.container').height()---"+$('body>.container').height() );
-    // console.log("$('#main').height()--------"+$('#main').height());
-    // console.log("$('body').height()--------"+$('body').height());
-    //console.log("$('#main').html()--------"+$('#main').html());
-    // console.log("$('body>.container').offset().top----"+$('body>.container').offset().top);
-    // console.log("footerHeight---"+footerHeight);
-    // console.log("footerMarginTop---"+footerMarginTop);
-    console.log(contentHeight);
-    if (contentHeight < windowHeight) {
-        $('footer').addClass('navbar-fixed-bottom');
-    } else {
-        $('footer').removeClass('navbar-fixed-bottom');
+/*addwheel*/
+/*滚轮添加*/
+function addEvent(obj,sEv,fn){
+    if(obj.addEventListener){
+        obj.addEventListener(sEv,fn,false);
+    }else{
+        obj.attachEvent('on'+sEv,fn);
     }
-
-    $('footer').show(400);
 }
-
-/**
- * 使用正则表达式得到底栏的MarginTop
- * @return {string} 底栏的MarginTop
- */
-function getFooterMarginTop() {
-    var margintop = $('footer').css('marginTop');
-    var patt = new RegExp("[0-9]*");
-    var re = patt.exec(margintop);
-    // console.log(re[0]);
-    return re[0];
+function addWheel(obj,fn){
+    function wheel(ev){
+        var oEvent = ev || event;
+        var bDown = true;
+        bDown = oEvent.detail?oEvent.detail>0:oEvent.wheelDelta < 0;
+        fn && fn(bDown);
+        oEvent.preventDefault && oEvent.preventDefault();
+        return false;
+    }
+    if(window.navigator.userAgent.indexOf('Firefox')!=-1){
+        obj.addEventListener('DOMMouseScroll',wheel,false);
+    }else{
+        // obj.onmousewheel = wheel;
+        addEvent(obj,'mousewheel',wheel);
+    }
 }
+/*moveCube*/
+//弹性碰撞
+function ball(obj){
+    var iSpeedX=0;
+    var iSpeedY=0;
+    var lastX=0;
+    var lastY=0;
+    var timer;
+    obj.onmousedown=function(ev){
+        clearInterval(timer);
+        var oEvent=ev || event;
+        var disX=oEvent.clientX-obj.offsetLeft;
+        var disY=oEvent.clientY-obj.offsetTop;
 
-/**
- * 分类展示
- * 点击右侧的分类展示时
- * 左侧的相关裂变展开或者收起
- * @return {[type]} [description]
- */
-function categoryDisplay() {
-    /*only show All*/
-    $('.post-list-body>div[post-cate!=All]').hide();
-    /*show category when click categories list*/
-    $('.categories-list-item').click(function() {
-        var cate = $(this).attr('cate'); //get category's name
+        document.onmousemove=function(ev){
+            var oEvent=ev || event;
+            obj.style.left=oEvent.clientX-disX+'px';
+            obj.style.top=oEvent.clientY-disY+'px';
 
-        $('.post-list-body>div[post-cate!=' + cate + ']').hide(250);
-        $('.post-list-body>div[post-cate=' + cate + ']').show(400);
-    });
+            // 当前坐标
+            // 上一次坐标
+            iSpeedX=oEvent.clientX-lastX;
+            iSpeedY=oEvent.clientY-lastY;
+            // 更新上一次坐标
+            lastX=oEvent.clientX;
+            lastY=oEvent.clientY;
+        };
+        document.onmouseup=function(){
+            document.onmousemove=null;
+            document.onmouseup=null;
+            collision();
+        };
+        return false;
+    };
+
+    function collision(){
+        clearInterval(timer);
+        timer=setInterval(function(){
+            iSpeedY+=3;
+            var l=obj.offsetLeft+iSpeedX;
+            var t=obj.offsetTop+iSpeedY;
+
+            if(t>=document.documentElement.clientHeight-obj.offsetHeight){
+                t=document.documentElement.clientHeight-obj.offsetHeight;
+                iSpeedY*=-0.8;
+                iSpeedX*=0.8;
+            }
+            if(l>document.documentElement.clientWidth-obj.offsetWidth){
+                l=document.documentElement.clientWidth-obj.offsetWidth;
+                iSpeedX*=-0.8;
+                iSpeedY*=0.8;
+            }
+            if(t<0){
+                t=0;
+                iSpeedY*=-0.8;
+                iSpeedX*=0.8;
+            }
+            if(l<0){
+                l=0;
+                iSpeedX*=-0.8;
+                iSpeedY*=0.8;
+            }
+
+            obj.style.left=l+'px';
+            obj.style.top=t+'px';
+
+            // 速度小于1
+            if(Math.abs(iSpeedX)<1){
+                iSpeedX=0;
+            }
+            if(Math.abs(iSpeedY)<1){
+                iSpeedY=0;
+            }
+            if(iSpeedX==0 && iSpeedY==0 && t==document.documentElement.clientHeight-obj.offsetHeight){
+                clearInterval(timer);
+            }
+        }, 30);
+    }
 }
+/*through*/
+function through(obj){
+    function a2d(n){
+        return n*180/Math.PI;
+    }
+    function d2a(n){
+        return n*Math.PI/180;
+    }
+    function getPos(obj){
+        var l=0;
+        var t=0;
+        while(obj){
+            l+=obj.offsetLeft;
+            t+=obj.offsetTop;
 
-/**
- * 回到顶部
- */
-function backToTop() {
-    //滚页面才显示返回顶部
-    $(window).scroll(function() {
-        if ($(window).scrollTop() > 100) {
-            $("#top").fadeIn(500);
-        } else {
-            $("#top").fadeOut(500);
+            obj=obj.offsetParent;
         }
-    });
-    //点击回到顶部
-    $("#top").click(function() {
-        $("body").animate({
-            scrollTop: "0"
-        }, 500);
-    });
-
-    //初始化tip
-    $(function() {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-}
-
-
-/**
- * 侧边目录
- */
-function generateContent() {
-
-    // console.log($('#markdown-toc').html());
-    if (typeof $('#markdown-toc').html() === 'undefined') {
-        // $('#content .content-text').html('<ul><li>文本较短，暂无目录</li></ul>');
-        $('#content').hide();
-        $('#myArticle').removeClass('col-sm-9').addClass('col-sm-12');
-    } else {
-        $('#content .content-text').html('<ul>' + $('#markdown-toc').html() + '</ul>');
-        /*   //数据加载完成后，加固定边栏
-        $('#myAffix').attr({
-            'data-spy': 'affix',
-            'data-offset': '50'
-        });*/
+        return {left: l, top: t};
     }
-    console.log("myAffix!!!");
+    function hoverDir(obj,ev){
+        var x = getPos(obj).left+obj.offsetWidth/2 -ev.clientX;
+        var y = getPos(obj).top+obj.offsetHeight/2 -ev.clientY;
+        //console.log(obj.offsetLeft);
+        // console.log(getPos(obj).left);
+        return Math.round((a2d(Math.atan2(y,x))+180)/90)%4;
+    }
+    //进来
+    obj.onmouseover = function(ev){
+        var oS =obj.children[0];
+        var oEvent = ev||event;
+        var oFrom = oEvent.fromElement||oEvent.relatedTarget;
+        if(obj.contains(oFrom)){
+            return;
+        }
+        //滑过方向
+        var dir = hoverDir(obj,oEvent);
+        switch(dir){
+            //右边0
+            case 0:
+                oS.style.left = '280';
+                oS.style.top = '0px';
+                break;
+            //下边1
+            case 1:
+                oS.style.left = '0px';
+                oS.style.top = '280px';
+                break;
+            //左边2
+            case 2:
+                oS.style.left = '-280px';
+                oS.style.top = '0px';
+                break;
+            //上边3
+            case 3:
+                oS.style.left = '0';
+                oS.style.top = '-280px';
+                break;
+        }
+        move(oS,{left:0,top:0});
+    };
+    //出去
+    obj.onmouseout = function(ev){
+        var oS =obj.children[0];
+        var oEvent = ev||event;
+        var oTo = oEvent.toElement||oEvent.relatedTarget;
+        if(obj.contains(oTo)){return;}
+        var dir = hoverDir(obj,oEvent);
+        switch(dir){
+            case 0:
+                move(oS,{left:280,top:0});
+                break;
+            case 1:
+                move(oS,{left:0,top:280});
+                break;
+            case 2:
+                move(oS,{left:-280,top:0});
+                break;
+            case 3:
+                move(oS,{left:0,top:-280});
+                break;
+        }
+    };
+}
+/*setPage*/
+function setPage(){
+    ;(function(win,doc){
+        function setStyle(){
+            oPage.style.width=doc.documentElement.clientWidth+'px';
+            oPage.style.height=doc.documentElement.clientHeight+'px';
+            oScreen.style.width=doc.documentElement.clientWidth+'px';
+            oScreen.style.height=3*doc.documentElement.clientHeight+'px';
+            for(var i=0;i<aDiv.length;i++){
+                aDiv[i].style.width=doc.documentElement.clientWidth+'px';
+                aDiv[i].style.height=doc.documentElement.clientHeight+'px';
+                //alert(oScreen.style.width);
+            }
+        }
+        setStyle();
+        win.onresize=function(){
+            setStyle();
+        };
+    })(window,document);
 }
