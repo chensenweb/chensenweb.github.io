@@ -16,7 +16,7 @@ window.onload=function(){
                 oPage.style.width=doc.documentElement.clientWidth+'px';
                 oPage.style.height=doc.documentElement.clientHeight+'px';
                 oScreen.style.width=doc.documentElement.clientWidth+'px';
-                oScreen.style.height=4*doc.documentElement.clientHeight+'px';
+                oScreen.style.height=3*doc.documentElement.clientHeight+'px';
                 for(var i=0;i<aDiv.length;i++){
                     aDiv[i].style.width=doc.documentElement.clientWidth+'px';
                     aDiv[i].style.height=doc.documentElement.clientHeight+'px';
@@ -69,9 +69,9 @@ window.onload=function(){
 
                 //oHeader.style.display='none';
             }
-            if(iNow==4){
+            if(iNow==3){
                 oScreen.style.top=0+'px';
-                iNow=3;
+                iNow=2;
                 bw=false;
             }
         }else{
@@ -176,16 +176,16 @@ window.onload=function(){
     }
     //链接跳转
     aLi[0].onclick=function(){
-        window.open('ECOM','_blank');
+        window.open('JD','_blank');
     };
     aLi[1].onclick=function(){
-        window.open('100du','_blank');
+        window.open('JDSC','_blank');
     };
     aLi[2].onclick=function(){
-        window.open('#','_blank');
+        window.open('fff','_blank');
     };
     aLi[3].onclick=function(){
-        window.open('JD','_blank');
+        window.open('#','_blank');
     };
     aLi[4].onclick=function(){
         window.open('#','_blank');
@@ -193,6 +193,24 @@ window.onload=function(){
     aLi[5].onclick=function(){
         window.open('#','_blank');
     };
+	var old=0;
+	
+	for(var i=0;i<aLi.length;i++){
+		aLi[i].index=i;
+		aA = aLi[i].getElementsByTagName('a');		
+		aLi[i].onmouseover=function(){
+	
+		//操作上一个li里面的div
+		 var oldA = aLi[old].getElementsByTagName('a');
+		 oldA[0].style.display = "block";
+		 oldA[1].style.display = "none";
+		 //操作当前鼠标移入的li下面的两个div
+		 var aA = this.getElementsByTagName('a');
+		 aA[0].style.display = "none";
+		 aA[1].style.display ="block";
+		old = this.index;
+			};		
+		}
 
     //3D盒子，首页
     var oBox = document.querySelector('.page .screen .main-page .box');
@@ -286,7 +304,6 @@ window.onload=function(){
         //console.log(bok);
     },2000);
     var aLine=document.querySelectorAll('.page .screen .main-page .title ul li ul li');
-    console.log(aLine.length);
     for(var i=0;i<aLine.length;i++){
         aLine[0].style.width= 400+'px';
         aLine[1].style.height=300 +'px';
