@@ -182,7 +182,7 @@ window.onload=function(){
         window.open('JDSC','_blank');
     };
     aLi[2].onclick=function(){
-        window.open('fff','_blank');
+        window.open('easy_setup','_blank');
     };
     aLi[3].onclick=function(){
         window.open('#','_blank');
