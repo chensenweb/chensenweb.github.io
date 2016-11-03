@@ -132,7 +132,6 @@ window.onload=function(){
         }
     }
     var aS = oShowbox.children;
-    //alert(oShowbox.children.length);
     setTimeout(function(){
         for(var i=0;i<aS.length;i++){
             var x = aS[i].offsetLeft+aS[i].offsetWidth/2-oShowbox.offsetWidth/2;
@@ -193,24 +192,7 @@ window.onload=function(){
     aLi[5].onclick=function(){
         window.open('#','_blank');
     };
-	var old=0;
 	
-	for(var i=0;i<aLi.length;i++){
-		aLi[i].index=i;
-		aA = aLi[i].getElementsByTagName('a');		
-		aLi[i].onmouseover=function(){
-	
-		//操作上一个li里面的div
-		 var oldA = aLi[old].getElementsByTagName('a');
-		 oldA[0].style.display = "block";
-		 oldA[1].style.display = "none";
-		 //操作当前鼠标移入的li下面的两个div
-		 var aA = this.getElementsByTagName('a');
-		 aA[0].style.display = "none";
-		 aA[1].style.display ="block";
-		old = this.index;
-			};		
-		}
 
     //3D盒子，首页
     var oBox = document.querySelector('.page .screen .main-page .box');
@@ -239,48 +221,8 @@ window.onload=function(){
     oBox.onmouseout=function(){
         cube();
     };
-    oBox.onmousedown = function(ev){
-        return;
-        clearInterval(timer1);
-        clearInterval(oBox.timer);
-        var disX = ev.pageX - y;
-        var disY = ev.pageY - x;
-        document.onmousemove = function(ev){
-            x = ev.pageY-disY;
-            y = ev.pageX-disX;
-            oBox.style.msTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-            oBox.style.WebkitTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-            oBox.style.OTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-            oBox.style.MozTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-            iSpeedX = ev.pageX-lastX;
-            iSpeedY = ev.pageY-lastY;
-            lastX = ev.pageX;
-            lastY = ev.pageY;
-        };
-        document.onmouseup = function(){
-            document.onmousemove = null;
-            document.onmouseup = null;
-            oBox.timer = setInterval(function(){
-                iSpeedX*=0.95;
-                iSpeedY*=0.95;
-                x+=iSpeedY;
-                y+=iSpeedX;
-                oBox.style.msTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-                oBox.style.WebkitTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-                oBox.style.OTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-                oBox.style.MozTransform = 'perspective(800px) rotateX('+-x/5+'deg) rotateY('+y/5+'deg)';
-                if(Math.abs(iSpeedX)<1)iSpeedX=0;
-                if(Math.abs(iSpeedY)<1)iSpeedY=0;
-                if(iSpeedX==0&&iSpeedY==0){
-                    clearInterval(oBox.timer);
-                    clearInterval(timer1);
-                }
-
-            },30);
-            cube();
-        };
-        return false;
-    };
+	
+   
     //首页文字效果
     var aP=document.querySelectorAll('.page .screen .main-page .title ul p');
     var bok=true;
@@ -317,7 +259,6 @@ window.onload=function(){
     for(var i=0;i<aChange.length;i++){
         aChange[i].index=i;
         aChange[i].onclick=function(){
-            console.log(this.index);
             iNow=this.index;
             oScreen.style.top=-iNow*document.documentElement.clientHeight+'px';
         };

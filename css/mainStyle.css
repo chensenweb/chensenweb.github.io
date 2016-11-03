@@ -169,7 +169,8 @@
     -ms-transform-style:preserve-3d;
     -webkit-transform-style:preserve-3d;
     -moz-transform-style:preserve-3d;
-    -webkit-transform:perspective(800px) rotateX(0deg) rotateY(0deg);}
+    -webkit-transform:perspective(800px) rotateX(0deg) rotateY(0deg);
+}
 .page .screen .main-page  .inside  .box div{
     position:absolute;
     top:0;
